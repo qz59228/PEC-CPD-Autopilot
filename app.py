@@ -7,7 +7,6 @@ import io
 st.set_page_config(page_title="PEC CPD Autopilot", layout="centered")
 st.title("PEC CPD Autopilot")
 st.write("**Agentic AI for 300k Pakistan Engineers - ASPIRE Final Hackathon**")
-st.write("**Total 40 = 4 + 1 + 19 + 3 = 40**")
 
 # ARCHITECTURE - Shows in Streamlit output
 try:
