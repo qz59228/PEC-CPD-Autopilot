@@ -7,7 +7,7 @@
 You can check the live system here: https://pec-cpd-autopilot-rfr4wbgq.streamlit.app/
 
 GitHub Repo: https://github.com/qz59228/PEC-CPD-Autopilot
-Author: Engr. Qamar Zaman | PEC Reg No: 137429
+Author: Engr. Qamar Zaman | PEC Reg No: 59228
 
 ## Result - 2026 (Live App Data)
 
@@ -57,7 +57,7 @@ PEC Policy is complex:
 - **Duplicate Detection** - By Serial No (Primary) + File Name (Secondary), saved in pec_cpd_data.json, survives refresh
 - **PEC Policy Sidebar** - RE/PE selector, Years Experience input, Required Points auto-calculated
 - **EPE Eligibility Checker** - Checks 17 CPD Points + 5 Years Experience as per PEC CPD Bye-Laws 2008
-- **PEC Official Compliance Seal** - Verification Hash (SHA256), Engineer Name, PEC Reg No: 137429, Total Points: 74.5, Required Points: 21.0, Compliance Status, EPE Status, Report Generated Timestamp, Engineer Signature field, PEC Authorized Officer Signature field
+- **PEC Official Compliance Seal** - Verification Hash (SHA256), Engineer Name, PEC Reg No: 59228, Total Points: 74.5, Required Points: 21.0, Compliance Status, EPE Status, Report Generated Timestamp, Engineer Signature field, PEC Authorized Officer Signature field
 - **Persistent Storage** - pec_cpd_data.json, Data restored after refresh
 - **Download Validated PEC Excel File** - Ready for Submission
 - **Analytics** - Certificates by Year (Bar Chart), Points per Year, Points by PEC Category
@@ -99,4 +99,8 @@ LangChain, LangGraph, LLM, RAG Pipeline, Python, PyMuPDF, PyPDF2, openpyxl, pand
 
 ## Legal Disclaimer
 
-This is an engineer-generated summary extracted from uploaded PEC certificates. It is not an official PEC issued document and does not claim PEC endorsement. All data is extracted directly from real PEC certificates uploaded by the engineer. For official PEC verification, certificates must be verified with Pakistan Engineering Council directly at pec.org.pk. This application is developed for ASPIRE Final Hackathon 2026 for educational and automation purposes only.
+This report is an engineer-generated summary extracted from uploaded PEC certificates. It is not an official Pakistan Engineering Council (PEC) issued document and does not claim PEC endorsement. All data is extracted directly from authentic PEC certificates uploaded by the engineer. For official PEC verification, certificates must be verified directly with PEC at pec.org.pk. This project is developed for ASPIRE Final Hackathon 2026 for educational and automation purposes only.
+
+**Copyright and Intellectual Property:** "PEC CPD Autopilot" is the original work of Engr. Qamar Zaman, PEC Registered Engineer (Reg No: 59228). All rights reserved. No part of this project, including code, architecture, data, or generated reports, may be copied, reproduced, distributed, or used commercially without prior written permission from the author. Unauthorized use or infringement will be pursued under applicable copyright and intellectual property laws of Pakistan.
+
+**Contact for Permission:** https://onlk.in/fb63a0
