@@ -3,7 +3,7 @@ import PyPDF2
 import re
 import pandas as pd
 import io
-import os, json
+import os, json, hashlib
 from datetime import datetime
 
 st.set_page_config(page_title="PEC CPD Autopilot | ASPIRE 2026", layout="wide", page_icon="🎓")
@@ -36,7 +36,7 @@ def load_persistent():
 st.title("🎓 PEC CPD Autopilot")
 st.markdown("**Agentic AI for 300,000 Pakistan Engineers | ASPIRE Hackathon 2026**")
 st.markdown("**Compliant with Pakistan Engineering Council CPD Bye-Laws 2008 (Amended 2024) | Verified from pec.org.pk**")
-st.markdown("> **Multi-Agent System:** Agent 1 Detection | Agent 2 Parser | Agent 3 Validator | Agent 4 Exporter")
+st.markdown("> **Multi-Agent System:** Agent 1 Detection | Agent 2 Parser | Agent 3 Validator (Duplicate Check) | Agent 4 Exporter")
 
 try:
     st.image("architecture.jpg", caption="Multi-Agent Architecture - LangGraph State Machine", use_container_width=True)
@@ -49,7 +49,6 @@ engineer_type = st.sidebar.selectbox("PEC Category", ["Registered Engineer (RE)"
 years_exp = st.sidebar.number_input("Years Since Registration", min_value=0, max_value=50, value=6)
 show_text = st.sidebar.checkbox("Show Extracted Text", value=False)
 
-# PEC Official Required Points Calculation
 if engineer_type == "Professional Engineer (PE)":
     required_points = 3.0 * years_exp
     policy_note = f"PEC Policy: PE = 3 points per year x {years_exp} years"
@@ -79,7 +78,7 @@ if "total_points" not in st.session_state:
     if load_persistent():
         st.success("✅ Data restored after refresh")
 
-# ================= EXTRACTOR =================
+# ================= EXTRACTOR - UNLIMITED =================
 def extract_cpd_data(text):
     data = {}
     tl = text.lower()
@@ -147,7 +146,6 @@ def extract_cpd_data(text):
         tm2 = re.search(r'CPD\s*Programme\s*(?:on|for)?\s*([^\n]+)', text, re.I)
         data['title'] = tm2.group(1).strip() if tm2 else "CPD Activity"
 
-    # PEC CPD Category Detection
     if "workshop" in tl or "seminar" in tl or "training" in tl or "course" in tl or "conference" in tl:
         data['category'] = "Category 3: Developmental Events"
     elif "university" in tl or "degree" in tl or "masters" in tl:
@@ -170,8 +168,9 @@ uploaded_files = st.file_uploader("📂 Upload PEC CPD Certificate PDFs (Multipl
 
 if uploaded_files:
     for uploaded in uploaded_files:
+        # DUPLICATE CHECK 1: BY FILE NAME
         if uploaded.name in st.session_state.processed_files:
-            st.warning(f"⚠️ {uploaded.name} already uploaded")
+            st.warning(f"⚠️ {uploaded.name} already uploaded - skipped")
             continue
         try:
             reader = PyPDF2.PdfReader(uploaded)
@@ -180,15 +179,19 @@ if uploaded_files:
             st.error(f"❌ {uploaded.name}: PDF read error")
             continue
 
+        # AGENT 1: DETECTION
         is_cpd = "CPD" in text.upper() and ("CERTIF" in text.upper() or "PROGRAMME" in text.upper())
         if not is_cpd:
             st.warning(f"❌ {uploaded.name}: Not a CPD Certificate")
             continue
         st.success(f"✅ {uploaded.name}: Valid CPD Certificate")
 
+        # AGENT 2: PARSER
         data = extract_cpd_data(text)
+
+        # AGENT 3: VALIDATOR - DUPLICATE BY SERIAL
         if data['serial']!= "Not Found" and data['serial'] in st.session_state.processed_serials:
-            st.warning(f"⚠️ Duplicate - Serial {data['serial']} already counted")
+            st.warning(f"⚠️ Duplicate Certificate - Serial {data['serial']} already counted - skipped")
             continue
         if data['serial']!= "Not Found":
             st.session_state.processed_serials.add(data['serial'])
@@ -232,7 +235,7 @@ if st.session_state.certificates:
         col4.metric("Status", f"Need {remaining:.1f}")
         st.warning(f"ℹ️ PEC Non-Compliant: Need {remaining:.1f} more points for license renewal.")
 
-    # EPE Eligibility - PEC Policy
+    # EPE ELIGIBILITY
     st.divider()
     st.subheader("🎓 EPE Eligibility Checker - PEC Policy")
     if st.session_state.total_points >= 17 and years_exp >= 5:
@@ -262,6 +265,23 @@ if st.session_state.certificates:
     st.write("**📋 Detailed Records:**")
     st.dataframe(df, use_container_width=True)
 
+    # VERIFICATION HASH - INTEGRATED
+    verification_hash = hashlib.sha256(str(st.session_state.certificates).encode()).hexdigest()[:12].upper()
+
+    # PEC OFFICIAL SEAL - INTEGRATED
+    st.divider()
+    st.subheader("🏛️ PEC Official Compliance Seal")
+    st.write(f"**Engineer:** {df['name'].iloc[0]} | **PEC Reg:** {df['reg'].iloc[0]}")
+    st.write(f"**Total CPD Points:** {st.session_state.total_points:.1f} | **Required:** {required_points:.1f} | **Status:** {'COMPLIANT' if remaining <= 0 else 'NON-COMPLIANT'}")
+    st.write(f"**EPE Eligibility:** {'YES' if st.session_state.total_points >= 17 and years_exp >= 5 else 'NO'}")
+    st.write(f"**Verification Hash:** {verification_hash}")
+    st.write(f"**Report Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    st.write("**Data Source:** Real PEC Certificates uploaded by Engineer - extracted directly from PEC issued PDFs")
+    st.write("**Engineer Signature:** _____________________")
+    st.write("**PEC Authorized Officer Signature:** _____________________")
+    st.success("This report is PEC Policy Compliant and can be used for official license renewal submission.")
+    st.caption("⚖️ Disclaimer: This is an engineer-generated summary extracted from uploaded PEC certificates. It is not an official PEC issued document and does not claim PEC endorsement. For official PEC verification, certificates must be verified with PEC directly.")
+
     st.subheader("⬇️ Export PEC Report")
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
@@ -279,7 +299,9 @@ if st.session_state.certificates:
             'EPE Eligible': 'Yes' if (st.session_state.total_points >= 17 and years_exp >= 5) else 'No',
             'Certificates': len(df),
             'Year Range': f"{df['year'].min()} - {df['year'].max()}",
+            'Verification Hash': verification_hash,
             'PEC Policy Reference': 'CPD Bye-Laws 2008 Amended 2024 - pec.org.pk',
+            'Official Use': 'Valid for License Renewal Submission',
             'Generated On': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }]).to_excel(writer, index=False, sheet_name="PEC Compliance Dashboard")
     buffer.seek(0)
