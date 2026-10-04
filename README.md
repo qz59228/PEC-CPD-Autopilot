@@ -4,11 +4,10 @@
 **ASPIRE Final Hackathon 2026 | PEC CPD Points Calculator**
 **Compliant with Pakistan Engineering Council CPD Bye-Laws 2008 (Amended 2024) | Verified from pec.org.pk**
 
-## Live Demo & Repo
+You can check the live system here: https://pec-cpd-autopilot-rfr4wbgq.streamlit.app/
 
-**Live Demo:** https://pec-cpd-autopilot-rfr4wbgq.streamlit.app/
-**GitHub Repo:** https://github.com/qz59228/PEC-CPD-Autopilot
-**Author:** Engr. Qamar Zaman | PEC Reg No: 137429
+GitHub Repo: https://github.com/qz59228/PEC-CPD-Autopilot
+Author: Engr. Qamar Zaman | PEC Reg No: 137429
 
 ## Result - 2026 (Live App Data)
 
@@ -20,7 +19,7 @@
 - 2025: 30 Points
 - 2026: 31 Points
 - Unknown: 2.5 Points
-- **Certificates Processed: 76**
+- Certificates Processed: 76
 - **Calculation: 6 + 3 + 2 + 30 + 31 + 2.5 = 74.5**
 
 **Engineer Type:** Registered Engineer (RE)
@@ -31,8 +30,6 @@
 **EPE Eligible:** ✅ Yes - 17 CPD Points + 5 Years Experience Completed (PEC CPD Bye-Laws 2008)
 **Verification Hash:** 0199AA4476E7
 **Report Generated:** 2026-10-04
-
-![Architecture](architecture.jpg)
 
 ## Problem
 
