@@ -1,4 +1,7 @@
 streamlit
-PyPDF2
+PyMuPDF
+pytesseract
+Pillow
 pandas
 openpyxl
+PyPDF2
